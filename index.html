@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <title>cooki clik2 !! real not fake</title>
+        <style>
+            @keyframes ror {
+                from {
+                    transform: rotate(90deg);
+                }
+                to {
+                    transform: rotate(-90deg);
+                }
+            }
+            .spin {
+                animation: ror;
+                animation-iteration-count: infinite;
+            }
+            .counter {
+                font-size: 300%;
+            }
+            .store {
+                width: 30%;
+                height: 30em;
+                overflow: auto;
+                float: right;
+                background-color: rgba(0, 0, 0, 10%);
+                text-align: center;
+            }
+            .purchasedItems {
+                width: 30%;
+                height: 30em;
+                overflow: auto;
+                float: right;
+                background-color: rgba(0, 0, 0, 10%);
+                margin-right: 4%;
+            }
+            .reciept {
+                width: 100%;
+                height: 12em;
+                overflow: auto;
+                background-color: rgba(0, 0, 0, 10%);
+            }
+            .inventoryDivItem {
+                position: relative;
+                float: left;
+            }
+            .itemAnimationDiv {
+                float: right;
+                position: relative;
+                width: 20%;
+                height: 30em;
+                overflow: auto;
+            }
+            .gameFunEvents {
+                float: right;
+            }
+            #cookie {
+                margin-left: 4%;
+                width: 10%;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="store">
+            <p>buy stuff</p>
+            <button type="submit" title="clicks for u" id="store-autoclicker"></button>
+            <button type="submit" title="clicks for u but faster" id="store-autoclicker2"></button>
+            <button type="submit" title="she upgrades the cookie" id="store-grandma"></button>
+            <button type="submit" title="grandma will be bought every 3 seconds if you have enough to pay for it" id="store-farmer"></button>
+            <button type="submit" title="grandma will be created in a factory every 20 seconds which upgrades your cookie" id="store-factory"></button>
+            <button type="submit" title="mine for cookie ore and craft it into 5 cookie upgrade!!!" id="store-minecraft"></button>
+            <button type="submit" title="idk this guy just dances but sometimes he decides to click" id="store-dancingguy"></button>
+            <button type="submit" title="clears 10+ grandmas (and cookie upgrades from them) in your inventory (if you have that many) and refunds them for half the price" id="store-impostor"></button>
+            <button type="submit" title="i have no clue how you are gonna build this but it increases your cookie upgrade every 5 seconds" id="store-hugetower"></button>
+            <button type="submit" title="what" id="store-chicago"></button>
+            <button type="submit" title="partner with google and get 1.5x cookie upgrade (you can only do this 3 times)" id="store-googledonut"></button>
+        </div>
+        <div id="inventoryItems" class="purchasedItems">
+            <p style="text-align: center" id="inventoryLabel">inventory</p>
+        </div>
+        <div id="itemAnimationDivHolder" class="itemAnimationDiv">
+        </div>
+        <img id="cookie" class="spin" width="300" alt="the cookie is supposed to be here, but it ran away" height="300" src="https://www.cookingclassy.com/wp-content/uploads/2014/06/chocolate-chip-cookie-16.jpg">
+        <br><br><br>
+        <p id="cookieUpgradesDescription">your cookie is very normal currently. why not spice it up a bit?</p>
+        <p>this is the bakery named <input id="gameBakeryName" type="text"></p>
+        <p><small>(your playthrough will save with this name)</small></p>
+        <button type="submit" title="save this current playthrough" id="savePlaythrough">save</button>
+        <details>
+            <summary>show my saved games</summary>
+            <button type="submit" title="refresh the list of saved games" id="reloadPlaythroughList">refresh list</button>
+            <button type="submit" title="download the list of saved games" id="downloadPlaythroughList">download all saves</button>
+            <button type="submit" title="import a file to add the saves to the list of saved games" id="importPlaythroughList">import saves from file</button>
+            <input id="importPlaythroughList_internalFileChooser" style="display:none" accept=".cc2" type="file">
+            <button type="submit" style="margin-left: 5%;" title="clear ALL of the saved data on this device" id="clearAllOfPlaythroughList">clear all saved data</button>
+            <div id="savedPlaythroughs">
+                <p>loading your saved games...</p>
+            </div>
+        </details>
+        <p class="counter" id="clik">0 clik</p>
+        <i><p id="gameFunEventsDisplay" class="gameFunEvents">your bakery is now open for things? how do bakery work lol</p></i>
+        <div id="recieptDiv" class="reciept">
+            <h2>reciept!!! - <i id="recieptClicksSpentText">0 cliks spent</i></h2>
+        </div>
+        <script>
+            let cliks = 0
+            let recipetClicks = 0
+            let nextrushtime = 200
+            let otherWayANim = false
+            let anim = 200
+            let rainbowEffect = 0
+            let currentlyRushTime = false
+            let cookieUpgrade = 0
+            // stuff
+            function metricNumber(num) {
+                if (num >= 1000000000) {
+                    return Number(String(num).substring(0, String(num).length - 9)) + " billion"
+                } else if (num >= 1000000) {
+                    return Number(String(num).substring(0, String(num).length - 6)) + " million"
+                } else if (num >= 1000) {
+                    return Number(String(num).substring(0, String(num).length - 3)) + " thousand"
+                } else {
+                    return String(num)
+                }
+            }
+            function updateCounter() {
+                document.getElementById("clik").innerHTML = cliks + " clik <small>(" + metricNumber(cliks) + ")</small>"
+            }
+            const upgradeDescriptions = [
+                "your cookie is very normal currently. why not spice it up a bit?",
+                "hmm, green probably isnt the best color for a food",
+                "that does not look healthy either",
+                "could sell as a zombie cookie or a radioactive cookie",
+                "its starting to look better",
+                "mint candy cookie!",
+                "thats a little extra there",
+                "i dont know how i feel about this one",
+                "water cookie idk",
+                "blue cookies could sell and probably already have!",
+                "the turbo cookie",
+                "blue flames emerged and out came this cookie",
+                "blue flames emerged and out came this cookie 2",
+                "that looks like rasins, bad",
+                "uhh i dont think that's sellable",
+                "this just looks like a purple mess",
+                "alien egg??????",
+            ]
+            function renderUpgrade() {
+                document.getElementById("cookie").setAttribute("style", "filter: hue-rotate(" + (cookieUpgrade * 16) + "deg) contrast(" + (100 + (cookieUpgrade * 20)) + "%)")
+                document.getElementById("cookieUpgradesDescription").innerHTML = upgradeDescriptions[cookieUpgrade] || "yeah im surprised you can even sell this cookie anymore"
+            }
+            function playItemAnimation(gif, size, length) {
+                const img = document.createElement("img")
+                img.src = "https://cdn.discordapp.com/attachments/914411539887456296/1014370246670430279/transparent.png"
+                setTimeout(() => {
+                    img.src = gif
+                }, 50);
+                img.setAttribute("width", String(size))
+                img.setAttribute("style", "position:absolute;left:0%;top:0%")
+                document.getElementById("itemAnimationDivHolder").prepend(img)
+                setTimeout(() => {
+                    img.remove()
+                }, length * 1000);
+            }
+            function pushToReciept(text, price) {
+                const div = document.getElementById("recieptDiv")
+                const piece = document.createElement("p")
+                piece.innerHTML = text
+                recieptItems.push({text: text, price: price})
+                div.append(piece)
+                recipetClicks += price
+                document.getElementById("recieptClicksSpentText").innerHTML = recipetClicks + " cliks spent"
+            }
+            function addToInventory(id, name, image) {
+                const inventory = document.getElementById("inventoryItems")
+                const item = document.createElement("div")
+                item.setAttribute("class", "inventoryDivItem")
+                item.innerHTML = "<img width=\"100\" height=\"100\" src=\"" + image + "\" alt=\"" + name + "\"><p style=\"background-color:white;position:absolute;left:0;bottom:0\">" + name + "</p>"
+                inventoryItemsSaved.push({buttonId: id, name: name, img: image})
+                inventory.prepend(item)
+                inventory.prepend(document.getElementById("inventoryLabel"))
+            }
+            document.getElementById("cookie").onclick = () => {
+                cliks += (currentlyRushTime ? 5 : 1) + (cookieUpgrade * 2)
+                updateCounter()
+                if (cliks >= nextrushtime) {
+                    currentlyRushTime = true
+                    nextrushtime += 200
+                    anim = 1
+                    setTimeout(() => {
+                        currentlyRushTime = false
+                    }, 10000)
+                }
+            }
+            setInterval(() => {
+                renderUpgrade()
+                document.getElementById("cookie").setAttribute("style", `${document.getElementById("cookie").getAttribute("style")};animation-duration: ${anim / 200}s;`)
+                if (!currentlyRushTime) {
+                    document.body.removeAttribute("style")
+                    if (otherWayANim) {
+                        anim -= 5
+                        if (anim <= 0) otherWayANim = !otherWayANim
+                    } else {
+                        anim += 5
+                        if (anim >= 200) otherWayANim = !otherWayANim
+                    }
+                } else {
+                    anim = 1
+                    document.body.setAttribute("style", "background-color: hsl(" + rainbowEffect + ", 100%, 50%)")
+                    rainbowEffect += 8
+                    if (rainbowEffect > 360) rainbowEffect = 0
+                }
+            }, 100)
+            function registerStoreItem(id, name, image, price, buyFunction, noMoneyFunction) {
+                const storebutton = document.getElementById(id)
+                storebutton.innerHTML = name + " - " + price + " cliks<br><img src=\"" + image + "\" width=\"100\" height=\"100\" alt=\"" + name + "\"><br><p><small>" + storebutton.getAttribute("title") + "</small></p>"
+                storebutton.onclick = () => {
+                    if (cliks >= price) {
+                        cliks = cliks - price
+                        updateCounter()
+                        pushToReciept(name + " -- " + price + " cliks", price)
+                        addToInventory(id, name, image)
+                        if (buyFunction != null) buyFunction()
+                    } else {
+                        if (noMoneyFunction != null) noMoneyFunction()
+                    }
+                }
+            }
+            registerStoreItem("store-autoclicker", "auto clicker v1", "https://st.depositphotos.com/1686208/4258/v/950/depositphotos_42580495-stock-illustration-click-icon.jpg", 100, () => {
+                setInterval(() => {
+                    cliks++
+                    updateCounter()
+                    playItemAnimation("https://cdn.discordapp.com/attachments/914411539887456296/1014368668962013204/autoclicker1.gif", 350, 1)
+                }, 1000)
+            })
+            registerStoreItem("store-autoclicker2", "auto clicker v2", "https://image.shutterstock.com/image-vector/clicking-finger-icon-hand-pointer-260nw-1709320306.jpg", 600, () => {
+                setInterval(() => {
+                    cliks++
+                    updateCounter()
+                    playItemAnimation("https://cdn.discordapp.com/attachments/914411539887456296/1014368668962013204/autoclicker1.gif", 350, 1)
+                }, 250)
+            })
+            registerStoreItem("store-grandma", "grandma", "https://media.discordapp.net/attachments/914411539887456296/1014314605532680264/unknown.png", 800, () => {
+                playItemAnimation("https://media.discordapp.net/attachments/914411539887456296/1014362539397754951/grandma3.gif", 350, 2)
+                cookieUpgrade++
+                setTimeout(() => {
+                    renderUpgrade()
+                }, 1000);
+            })
+            registerStoreItem("store-farmer", "farmer", "https://comps.gograph.com/caucasian-farmer-boy_gg57156186.jpg", 1300, () => {
+                setInterval(() => {
+                    playItemAnimation("https://media.discordapp.net/attachments/914411539887456296/1014366540629553232/farmer1.gif", 350, 2)
+                    setTimeout(() => {
+                        document.getElementById("store-grandma").onclick()
+                    }, 600)
+                }, 3000)
+            })
+            registerStoreItem("store-factory", "factory", "https://www.ttnews.com/sites/default/files/images/articles/italy-factories-1.jpg", 2200, () => {
+                setInterval(() => {
+                    playItemAnimation("https://media.discordapp.net/attachments/914411539887456296/1014362539397754951/grandma3.gif", 350, 2)
+                    cookieUpgrade++
+                    renderUpgrade()
+                }, 20000)
+            })
+            registerStoreItem("store-dancingguy", "dancing guy", "https://i.imgur.com/8bYQ5oz.gif", 3500, () => {
+                setInterval(() => {
+                    const rng = Math.round(Math.random() * 5000)
+                    if (rng > 4750) {
+                        cliks += (cookieUpgrade + 1)
+                        updateCounter()
+                    }
+                }, 5)
+            })
+            registerStoreItem("store-impostor", "impostor", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTG4fNigM4nyz8zXizit_Du-oU7pRK8UMRWR7TKw43wk_bFGZinp4JVsaNL4WpOG73rEWY&usqp=CAU", 5000, () => {
+                let amountOfGMs = 0
+                let lookingFor = null
+                inventoryItemsSaved.forEach(item => {
+                    if (item.buttonId == "store-grandma") {
+                        amountOfGMs++
+                        lookingFor = item
+                    }
+                })
+                if (amountOfGMs >= 10) {
+                    cliks += (400 * amountOfGMs) + (cookieUpgrade * 350)
+                    cookieUpgrade = 0
+                    renderUpgrade()
+                    for (let i = 0; i < amountOfGMs; i++) {
+                        inventoryItemsSaved.splice(inventoryItemsSaved.indexOf(lookingFor), 1)
+                    }
+                    let deleting = amountOfGMs
+                    const elements = document.getElementById("inventoryItems").getElementsByTagName("div")
+                    let increment = 0
+                    while (deleting > 0) {
+                        const imagea = elements.item(increment)
+                        if (imagea) {
+                            const imageb = imagea.getElementsByTagName("img")
+                            if (imageb) {
+                                const image = imageb.item(0)
+                                if (image.src == lookingFor.img && image.alt == lookingFor.name) {
+                                    elements.item(increment).remove()
+                                    deleting--
+                                    increment = 0
+                                }
+                            }
+                        } else {
+                            return
+                        }
+                        increment++
+                    }
+                } else {
+                    cliks += 5000
+                    alert("you dont have enough grandma power dumb")
+                }
+            })
+            registerStoreItem("store-hugetower", "huge tower", "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/picture-taken-on-may-21-2012-shows-dubais-recently-news-photo-144947080-1557160641.jpg", 8000, () => {
+                setInterval(() => {
+                    cookieUpgrade += 1
+                    renderUpgrade()
+                }, 7500)
+            })
+            registerStoreItem("store-chicago", "chicago", "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Buildings-1804479_1920.jpg/1200px-Buildings-1804479_1920.jpg", 15000, () => {
+                setInterval(() => {
+                    cliks++
+                }, 5)
+            })
+            registerStoreItem("store-googledonut", "google donuts", "https://pbs.twimg.com/ext_tw_video_thumb/915643237603274752/pu/img/LhQycNMaTK7T3AL0.jpg", 25000, () => {
+                let partneredTimes = 0
+                inventoryItemsSaved.forEach(item => {
+                    if (item.buttonId == "store-googledonut") {
+                        partneredTimes++
+                        if (partneredTimes > 3) {
+                            inventoryItemsSaved.splice(inventoryItemsSaved.indexOf(item), 1)
+                        }
+                    }
+                })
+                if (partneredTimes <= 3) {
+                    cookieUpgrade = Math.round(cookieUpgrade * 1.5)
+                } else {
+                    cliks += 25000
+                    alert("no more google partner ship")
+                }
+            })
+            registerStoreItem("store-minecraft", "mine & craft", "https://media.discordapp.net/attachments/914411539887456296/1014409609412362300/inecraft.png", 3000, () => {
+                cookieUpgrade += 5
+            })
+            // save & load
+            let hasABakeryAlreadyBeenLoadedSoFar = false
+            let inventoryItemsSaved = []
+            let recieptItems = []
+            function unixToDate(unix) {
+                return (new Date(unix).toDateString() + ", " + new Date(unix).toLocaleTimeString())
+            }
+            document.getElementById("reloadPlaythroughList").onclick = () => {
+                const listDiv = document.getElementById("savedPlaythroughs")
+                listDiv.innerHTML = "<p>loading your saved games...</p>"
+                if (localStorage.getItem("data") == null) localStorage.setItem("data", "[]")
+                const saveData = JSON.parse(localStorage.getItem("data"))
+                listDiv.innerHTML = ""
+                saveData.forEach(save => {
+                    const loadSaveButton = document.createElement("button")
+                    loadSaveButton.setAttribute("type", "submit")
+                    loadSaveButton.innerHTML = "load " + save.name + " created on " + unixToDate(save.date)
+                    const deleteSaveButton = document.createElement("button")
+                    deleteSaveButton.setAttribute("type", "submit")
+                    deleteSaveButton.innerHTML = "delete " + save.name
+                    deleteSaveButton.onclick = () => {
+                        const uSureBro = confirm("are you sure you want to delete " + save.name + "?")
+                        if (!uSureBro) return
+                        const saveData = JSON.parse(localStorage.getItem("data"))
+                        let correctSave = null
+                        saveData.forEach(lsave => {
+                            if (lsave.id == save.id) {
+                                correctSave = lsave
+                                return
+                            }
+                        })
+                        saveData.splice(saveData.indexOf(correctSave), 1)
+                        localStorage.setItem("data", JSON.stringify(saveData))
+                        document.getElementById("reloadPlaythroughList").onclick()
+                    }
+                    loadSaveButton.onclick = () => {
+                        if (hasABakeryAlreadyBeenLoadedSoFar) {
+                            alert("a bakery has already been loaded. refresh the page to load another.")
+                            return
+                        }
+                        const uSureBro = confirm("are you sure you want to load the bakery " + save.name + "?")
+                        if (!uSureBro) return
+                        const saveData = JSON.parse(localStorage.getItem("data"))
+                        let correctSave = null
+                        saveData.forEach(lsave => {
+                            if (lsave.id == save.id) {
+                                correctSave = lsave
+                                return
+                            }
+                        })
+                        document.getElementById("gameBakeryName").value = correctSave.name
+                        cliks = Infinity
+                        //cookieUpgrade = correctSave.data.cookieUpgrade || 0
+                        renderUpgrade()
+                        recipetClicks = 0
+                        document.getElementById("recieptClicksSpentText").innerHTML = recipetClicks + " cliks spent"
+                        nextrushtime = correctSave.data.rushTimeAt
+                        const deletingElements = document.getElementById("recieptDiv").getElementsByTagName("p")
+                        while (deletingElements.item(0)) {
+                            deletingElements.item(0).remove()
+                        }
+                        const deletingElements2 = document.getElementById("inventoryItems").getElementsByTagName("div")
+                        while (deletingElements2.item(0)) {
+                            deletingElements2.item(0).remove()
+                        }
+                        correctSave.data.inventory.forEach(inventoryItem => {
+                            document.getElementById(inventoryItem.buttonId).onclick()
+                        })
+                        cliks = correctSave.data.clicks
+                        updateCounter()
+                        document.getElementById("reloadPlaythroughList").onclick()
+                        hasABakeryAlreadyBeenLoadedSoFar = true
+                    }
+                    listDiv.prepend(deleteSaveButton)
+                    listDiv.prepend(loadSaveButton)
+                    listDiv.prepend(document.createElement("br"))
+                });
+            }
+            const refreshSaveList = document.getElementById("reloadPlaythroughList").onclick
+            function loadLatestSave() {
+                if (localStorage.getItem("data") == null) return
+                document.getElementById("savedPlaythroughs").getElementsByTagName("button").item(0).onclick()
+            }
+            function stringToCC2(str) {
+                let newString = ""
+                String(str).split("").forEach(char => {
+                    newString = newString + String(String(char).charCodeAt(0) * 24) + "ic;0x"
+                })
+                return newString
+            }
+            function CC2ToString(cc2) {
+                let newString = ""
+                String(cc2).split("ic;0x").forEach(val => {
+                    if (Number(val)) newString = newString + String(String.fromCharCode(Number(val) / 24))
+                })
+                return newString
+            }
+            document.getElementById("downloadPlaythroughList").onclick = () => {
+                if (localStorage.getItem("data") == null) localStorage.setItem("data", "[]")
+                const saveContent = stringToCC2(localStorage.getItem("data"))
+                const blob = new Blob([saveContent])
+                const a = document.createElement("a");
+                a.style = "display: none";
+                document.body.appendChild(a);
+                const url = window.URL.createObjectURL(blob);
+                a.href = url;
+                a.download = "save_data.cc2";
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            }
+            document.getElementById("importPlaythroughList").onclick = () => {
+                const filePicker = document.getElementById("importPlaythroughList_internalFileChooser")
+                filePicker.click()
+                filePicker.onchange = () => {
+                    if (filePicker.value != null && filePicker.value != "") {
+                        const fs = new FileReader()
+                        const file = filePicker.files[0]
+                        fs.onload = () => {
+                            if (localStorage.getItem("data") == null) localStorage.setItem("data", "[]")
+                            const saveData = JSON.parse(localStorage.getItem("data"))
+                            try {
+                                JSON.parse(CC2ToString(fs.result)).forEach(save => {
+                                    save.id = Math.ceil(((new Date().getTime() / 3) * 96) + ((Math.random() * 99999999) + 100))
+                                    saveData.push(save)
+                                })
+                            } catch (err) {
+                                alert("the imported data is corrupted and cannot be opened!")
+                                console.log(err)
+                            }
+                            localStorage.setItem("data", JSON.stringify(saveData))
+                            refreshSaveList()
+                        }
+                        fs.readAsText(file)
+                    }
+                }
+            }
+            document.getElementById("savePlaythrough").onclick = () => {
+                const bakeryName = document.getElementById("gameBakeryName").value
+                const bakeryData = {
+                    name: bakeryName == "" || bakeryName == null || bakeryName == undefined ? "unnamed bakery" : bakeryName,
+                    id: Math.ceil((new Date().getTime() / 3) * 96),
+                    date: new Date().getTime(),
+                    data: {
+                        clicks: cliks,
+                        paidClicks: recipetClicks,
+                        rushTimeAt: nextrushtime,
+                        inventory: inventoryItemsSaved,
+                        receipt: recieptItems,
+                        cookieUpgrade: cookieUpgrade
+                    }
+                }
+                if (localStorage.getItem("data") == null) localStorage.setItem("data", "[]")
+                const saveData = JSON.parse(localStorage.getItem("data"))
+                saveData.push(bakeryData)
+                try {
+                    localStorage.setItem("data", JSON.stringify(saveData))
+                } catch {
+                    alert("save failed; you have too many save files or your save file is too big!")
+                }
+                refreshSaveList()
+            }
+            window.onload = () => {
+                refreshSaveList()
+                loadLatestSave()
+                setInterval(() => {
+                    document.getElementById("savePlaythrough").onclick()
+                    refreshSaveList()
+                }, 240000)
+            }
+            document.getElementById("clearAllOfPlaythroughList").onclick = () => {
+                const uSureBro = confirm("are you ABSOLUTELY sure you want to clear ALL of your saved data on this device?")
+                if (!uSureBro) return
+                const uSureBro2 = confirm("are you REALLY sure you want to clear EVERYTHING?")
+                if (!uSureBro2) return
+                const uSureBro3 = confirm("100% certain you want to clear ALL data from this device??")
+                if (!uSureBro3) return
+                localStorage.clear()
+                refreshSaveList()
+            }
+            // handle fun events
+            const funEventsObject = {
+                character: [
+                    "person",
+                    "grandma",
+                    "grandpa",
+                    "dog",
+                    "alien",
+                    "banana",
+                    "sentient cookie",
+                    "cat",
+                    "huge car",
+                    "corporation",
+                    "dancing guy"
+                ],
+                action: [
+                    "takes",
+                    "eats",
+                    "steals",
+                    "buys",
+                    "explodes",
+                    "builds",
+                    "demolishes",
+                    "absolutely destroys",
+                    "completely deletes"
+                ],
+                item: [
+                    "cookie",
+                    "apple",
+                    "car",
+                    "tower",
+                    "machine",
+                    "factory",
+                    "huge amount of cash",
+                    "literally nothing",
+                    "random pear on the counter",
+                    "donut",
+                    "something completely random",
+                    "your liver"
+                ],
+                location: [
+                    "bakery",
+                    "parking lot",
+                    "pocket",
+                    "house",
+                    "ear",
+                    "liver"
+                ]
+            }
+            function randomArrayItem(array) {
+                return array[Math.round(Math.random() * (array.length - 1))]
+            }
+            setInterval(() => {
+                document.getElementById("gameFunEventsDisplay").innerHTML = "a " + randomArrayItem(funEventsObject.character) + " " + randomArrayItem(funEventsObject.action) + " a " + randomArrayItem(funEventsObject.item) + " in your " + randomArrayItem(funEventsObject.location) + "."
+            }, 10000);
+        </script>
+    </body>
+</html>
